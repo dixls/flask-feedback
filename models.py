@@ -23,3 +23,29 @@ class User(db.Model):
     email = db.Column(db.Text, nullable=False, unique=True)
     first_name = db.Column(db.Text(30), nullable=False)
     last_name = db.Column(db.Text(30), nullable=False)
+
+    @classmethod
+    def register(cls, username, pwd, email, first_name, last_name):
+        """Redister user and return registered user"""
+
+        hashed = bcrypt.generate_password_hash(pwd)
+        hashed_utf8 = hashed.decode("utf8")
+
+        return cls(
+            username=username,
+            password=hashed_utf8,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+    @classmethod
+    def authenticate(cls, username, pwd):
+        """check user exists and credentials correct"""
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(u.password, pwd):
+            return user
+        else:
+            return False
