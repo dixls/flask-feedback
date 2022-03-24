@@ -49,3 +49,16 @@ class User(db.Model):
             return user
         else:
             return False
+
+
+class Feedback(db.Model):
+    """feedback?"""
+
+    __tablename__ = "feedback"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.String, nullable=False)
+    username = db.Column(db.String, db.ForeignKey("users.username"))
+
+    author = db.relationship("User", backref="posts")
