@@ -1,8 +1,8 @@
 from hashlib import new
 from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import Registration, Login
-from models import connect_db, db, User
+from forms import Registration, Login, FeedbackForm
+from models import connect_db, db, User, Feedback
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///flask_feedback"
@@ -108,3 +108,30 @@ def profile(username):
         return redirect("/")
     else:
         return render_template("user_info.html", user=user)
+
+
+@app.route("/users/<username>/feedback/add", methods=["GET", "POST"])
+def add_feedback(username):
+    """allows a specific user to add feedback"""
+
+    user = User.query.get_or_404(username)
+
+    form = FeedbackForm()
+
+    if "current_user" not in session:
+        flash("Please login first", "danger")
+        return redirect("/login")
+    elif username != session["current_user"]:
+        flash("You do not have permission to view that page", "danger")
+        return redirect("/")
+    else:
+        if form.validate_on_submit():
+            title = form.title.data
+            content = form.content.data
+
+            new_feedback = Feedback(title=title,content=content,username=username)
+            db.session.add(new_feedback)
+            db.session.commit()
+            return redirect(f"/users/{username}")
+        else:
+            return render_template("add_feedback.html", user=user, form=form)

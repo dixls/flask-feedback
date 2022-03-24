@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Feedback{% endblock %}
+
+{% block content %}
+<h2 class="display-3">Add Feedback</h2>
+<form method="post">
+    {{ form.csrf_token }}
+    <div class="mb-3">
+        {{form.title.label(class_="form-label")}}
+        {{form.title(class_="form-control")}}
+    </div>
+    <div class="mb-3">
+        {{form.content.label(class_="form-label")}}
+        {{form.content(class_="form-control", rows_="3")}}
+    </div>
+    {% for field in form.errors %}
+    {% for error in form.errors[field] %}
+    <div class="alert alert-danger">
+    {{ error }}
+    </div>
+    {% endfor %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+</form>
+{% endblock %}
