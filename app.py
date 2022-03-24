@@ -19,7 +19,7 @@ toolbar = DebugToolbarExtension(app)
 @app.route("/")
 def homepage():
     """redirect to register for now"""
-    
+
     if "current_user" not in session:
         flash("you must login first", "danger")
         return redirect("/register")
@@ -70,7 +70,7 @@ def login():
             return redirect("/secret")
         else:
             form.username.errors = ["Bad username or password"]
-    
+
     return render_template("login.html", form=form)
 
 
@@ -92,3 +92,19 @@ def logout():
     session.pop("current_user")
 
     return redirect("/")
+
+
+@app.route("/users/<username>")
+def profile(username):
+    """shows current user info about their account"""
+
+    user = User.query.get_or_404(username)
+
+    if "current_user" not in session:
+        flash("Please login first", "danger")
+        return redirect("/login")
+    elif username != session["current_user"]:
+        flash("You do not have permission to view that page", "danger")
+        return redirect("/")
+    else:
+        return render_template("user_info.html", user=user)
