@@ -18,11 +18,11 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    username = db.Column(db.Text(20), primary_key=True)
-    password = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, nullable=False, unique=True)
-    first_name = db.Column(db.Text(30), nullable=False)
-    last_name = db.Column(db.Text(30), nullable=False)
+    username = db.Column(db.String(20), primary_key=True)
+    password = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
 
     @classmethod
     def register(cls, username, pwd, email, first_name, last_name):

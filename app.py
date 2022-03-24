@@ -19,8 +19,11 @@ toolbar = DebugToolbarExtension(app)
 @app.route("/")
 def homepage():
     """redirect to register for now"""
-
-    return redirect("/register")
+    if session["current_user"]:
+        return render_template("secret.html")
+    else:
+        flash("you must login first", "danger")
+        return redirect("/register")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -63,3 +66,14 @@ def login():
             return redirect("/secret")
     else:
         return render_template("login.html", form=form)
+
+
+@app.route("/secret")
+def secret():
+    """show just a secret page"""
+
+    if session["current_user"]:
+        return render_template("secret.html")
+    else:
+        flash("you must login first", "danger")
+        return redirect("/")
