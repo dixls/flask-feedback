@@ -19,11 +19,12 @@ toolbar = DebugToolbarExtension(app)
 @app.route("/")
 def homepage():
     """redirect to register for now"""
-    if session["current_user"]:
-        return render_template("secret.html")
-    else:
+    
+    if "current_user" not in session:
         flash("you must login first", "danger")
         return redirect("/register")
+    else:
+        return redirect("/secret")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -45,7 +46,10 @@ def register():
 
         session["current_user"] = new_user.username
 
+        return redirect("/secret")
+
     else:
+
         return render_template("register.html", form=form)
 
 
@@ -64,6 +68,8 @@ def login():
         if user:
             session["current_user"] = user.username
             return redirect("/secret")
+        else:
+            form.username.errors = ["Bad name/password"]
     else:
         return render_template("login.html", form=form)
 
@@ -72,8 +78,17 @@ def login():
 def secret():
     """show just a secret page"""
 
-    if session["current_user"]:
-        return render_template("secret.html")
-    else:
+    if "current_user" not in session:
         flash("you must login first", "danger")
         return redirect("/")
+    else:
+        return render_template("secret.html")
+
+
+@app.route("/logout")
+def logout():
+    """logout current user"""
+
+    session.pop("current_user")
+
+    return redirect("/")
