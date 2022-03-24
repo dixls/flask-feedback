@@ -18,19 +18,25 @@
         <td>{{user.email}}</td>
     </tr>
 </table>
-<a href="/users/{{user.username}}/feedback/add" class="btn btn-primary">Add Feedback</a>
-<div class="row mb-3">
-    {% for post in user.posts %}
-    <div class="col">
-        <div class="card mb-3">
-            <div class="card_body">
-                <h5 class="card_title">
-                    {{post.title}}
-                </h5>
-                <p class="card-text">{{post.content}}</p>
+<div class="containter">
+    <a href="/users/{{user.username}}/feedback/add" class="btn btn-primary">Add Feedback</a>
+    <div class="row">
+        {% for post in user.posts %}
+        <div class="col-3">
+            <div class="card m-3 p-2">
+                <div class="card_body">
+                    <h5 class="card_title">
+                        {{post.title}}
+                    </h5>
+                    <p class="card-text">{{post.content}}</p>
+                    <a href="/feedback/{{post.id}}/update" class="btn btn-light">Edit Post</a>
+                    <form action="/feedback/{{post.id}}/delete" method="post">
+                        <button type="submit" class="btn btn-danger">Delete Post</button>
+                    </form>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 {% endblock %}

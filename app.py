@@ -128,10 +128,55 @@ def add_feedback(username):
         if form.validate_on_submit():
             title = form.title.data
             content = form.content.data
-
-            new_feedback = Feedback(title=title,content=content,username=username)
+            new_feedback = Feedback(title=title, content=content, username=username)
             db.session.add(new_feedback)
             db.session.commit()
             return redirect(f"/users/{username}")
         else:
             return render_template("add_feedback.html", user=user, form=form)
+
+
+@app.route("/feedback/<post_id>/update", methods=["GET", "POST"])
+def update_feedback(post_id):
+    """lets the user that posted feedback edit it"""
+
+    post = Feedback.query.get_or_404(post_id)
+    form = FeedbackForm()
+
+    if "current_user" not in session:
+        flash("Please login first", "danger")
+        return redirect("/login")
+    elif post.username != session["current_user"]:
+        flash("You do not have permission to view that page", "danger")
+        return redirect("/")
+    else:
+        if form.validate_on_submit():
+            post.title = form.title.data
+            post.content = form.content.data
+            
+            db.session.commit()
+            return redirect(f"/users/{post.username}")
+        else:
+            user = User.query.get(session["current_user"])
+            form.title.data = post.title
+            form.content.data =post.content
+            return render_template("update_feedback.html", user=user, form=form, feedback=post)
+
+
+@app.route("/feedback/<post_id>/delete", methods=["POST"])
+def delete_feedback(post_id):
+    """lets the user that posted feedback delete it"""
+
+    post = Feedback.query.get_or_404(post_id)
+    form = FeedbackForm()
+
+    if "current_user" not in session:
+        flash("Please login first", "danger")
+        return redirect("/login")
+    elif post.username != session["current_user"]:
+        flash("You do not have permission to view that page", "danger")
+        return redirect("/")
+    else:
+        db.session.delete(post)
+        db.session.commit()
+        return redirect(f"/users/{post.username}")
