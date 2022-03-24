@@ -11,10 +11,14 @@
     <div class="mb-3">
         {{field.label(class_="form-label")}}
         {{field(class_="form-control")}}
-        {% for error in field.errors %}
-            {{ error(class_="invalid-feedback")}}
-        {% endfor %}
     </div>
+    {% endfor %}
+    {% for field in form.errors %}
+    {% for error in form.errors[field] %}
+    <div class="alert alert-danger">
+    {{ error }}
+    </div>
+    {% endfor %}
     {% endfor %}
     <button type="submit" class="btn btn-primary">Login</button>
     <span class="small-text">Don't have an account? <a href="/register">Sign up!</a></span>

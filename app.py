@@ -69,9 +69,9 @@ def login():
             session["current_user"] = user.username
             return redirect("/secret")
         else:
-            form.username.errors = ["Bad name/password"]
-    else:
-        return render_template("login.html", form=form)
+            form.username.errors = ["Bad username or password"]
+    
+    return render_template("login.html", form=form)
 
 
 @app.route("/secret")
