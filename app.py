@@ -11,7 +11,6 @@ app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "a secret key")
 
 connect_db(app)
-db.create_all()
 
 toolbar = DebugToolbarExtension(app)
 
